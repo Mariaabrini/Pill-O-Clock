@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="medications_shape_array">
+        <item>adhesive(s)</item>
+        <item>capsule(s)</item>
+        <item>cachet(s)</item>
+        <item>cream(s)</item>
+        <item>dragee(s)</item>
+        <item>emulsion(s)</item>
+        <item>pack(s)</item>
+        <item>gel(s)</item>
+        <item>drop(s)</item>
+        <item>inhalation(s)</item>
+        <item>shot(s)</item>
+        <item>lotion(s)</item>
+        <item>measure(s)</item>
+        <item>tablet(s)</item>
+        <item>powder(s)</item>
+        <item>ointment(s)</item>
+        <item>soap(s)</item>
+        <item>sachet(s)</item>
+        <item>unit(s)</item>
+        <item>solution(s)</item>
+        <item>spray(s)</item>
+        <item>suspension(s)</item>
+        <item>syrup(s)</item>
+    </array>
+
+    <array name="times_a_day">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </array>
+</resources>

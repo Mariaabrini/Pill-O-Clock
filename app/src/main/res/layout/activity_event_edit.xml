@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EventEditActivity"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.MonthlyViewCalendar.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.MonthlyViewCalendar.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/addmedlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8sp"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2sp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="16sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:text="Medicine Name"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/edit_med_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Medicine Name"
+                        android:inputType="text" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2sp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="16sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5sp">
+
+                        <TextView
+                            android:id="@+id/spinner_label2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto"
+                            android:paddingBottom="14sp"
+                            android:text="@string/times_a_day"
+                            android:textSize="20sp" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/timesaday_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="10sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/times_a_day"
+                            android:labelFor="@id/timesaday_spinner" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5sp">
+
+                        <TextView
+                            android:id="@+id/nbofpills"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto"
+                            android:paddingBottom="14sp"
+                            android:text="@string/dose"
+                            android:textSize="20sp" />
+
+                        <EditText
+                            android:id="@+id/tv_dose_quantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:inputType="number"
+                            android:padding="4sp"
+                            android:text="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10sp">
+
+                        <TextView
+                            android:id="@+id/typeofmeds"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto"
+                            android:paddingBottom="14sp"
+                            android:text="@string/type"
+                            android:textSize="20sp" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_dose_units"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8sp"
+                            android:entries="@array/medications_shape_array" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5sp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto"
+                            android:paddingBottom="14sp"
+                            android:text="Choose Container:"
+                            android:textSize="20sp" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/container_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="10sp"
+                            android:layout_marginEnd="10sp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/times_a_day"
+                            android:labelFor="@id/timesaday_spinner" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2sp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="16sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20sp"
+                        android:fontFamily="@font/roboto"
+                        android:text="Set Time"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ScrollView
+                            android:id="@+id/time_picker_scroll_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:id="@+id/time_picker_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+
+                        </ScrollView>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="8sp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2sp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="16sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/refill_reminder" />
+
+                    <EditText
+                        android:id="@+id/nbStock_ed"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="30sp"
+                        android:layout_marginEnd="30sp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/roboto"
+                        android:hint="@string/enter_number_of_pills_in_stock"
+                        android:inputType="number"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--
+            <TextView
+                android:id="@+id/eventDateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Date"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:textColor="@color/black"/>
+
+
+            <TextView
+                android:id="@+id/eventTimeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Time"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:textColor="@color/black"/>
+                -->
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@null"
+                android:onClick="saveEventAction"
+                android:text="Save"
+                android:textColor="@color/blue"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

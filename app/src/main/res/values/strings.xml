@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MonthlyViewCalendar</string>
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="next"><![CDATA[->]]></string>
+    <string name="times_a_day">Times a Day:</string>
+    <string name="dose">Dose:</string>
+    <string name="type">Type:</string>
+    <string name="refill_reminder">Refill Reminder</string>
+    <string name="enter_number_of_pills_in_stock">enter number of pills in stock</string>
+</resources>
