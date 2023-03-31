@@ -1,6 +1,7 @@
 package com.example.monthlyviewcalendar
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.graphics.Typeface
 import android.os.Build
@@ -11,6 +12,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import java.time.LocalTime
@@ -30,6 +32,7 @@ class EventEditActivity : AppCompatActivity() {
     private lateinit var stockNb: EditText
     private lateinit var timepickercontainer: LinearLayout
     private lateinit var containerNb: AppCompatSpinner
+    private lateinit var refillSwitch: SwitchCompat
 
     private lateinit var time: LocalTime
 
@@ -131,6 +134,8 @@ class EventEditActivity : AppCompatActivity() {
         stockNb = findViewById(R.id.nbStock_ed)
         timepickercontainer = findViewById(R.id.time_picker_container)
         containerNb = findViewById(R.id.container_spinner)
+        refillSwitch = findViewById(R.id.switch1)
+
 
         val numbers = arrayOf("1", "2", "3", "4")
         val timesADayadapter =
@@ -157,6 +162,28 @@ class EventEditActivity : AppCompatActivity() {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Check if any of the events in eventsList has the same containernb value as the new event
+        for (event in Event.eventsList) {
+            if (event.container == containernb) {
+                // Display a dialog box asking the user to choose a different container number
+                AlertDialog.Builder(this)
+                    .setTitle("Container number already in use")
+                    .setMessage("Please choose a different container number.")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+                return
+            }
+        }
+
+        if (refillSwitch.isChecked) {
+            // Switch is in the "on" state
+            // send notif when nb_stock == dose
+            Toast.makeText(this, "A refill Notif will be scheduled", Toast.LENGTH_SHORT).show()
+        }
+
         for (i in 0 until nbTimes.toInt()){
             val timeTextView = findViewById<TextView>(i+1)
             val timeString = timeTextView?.text?.toString()
