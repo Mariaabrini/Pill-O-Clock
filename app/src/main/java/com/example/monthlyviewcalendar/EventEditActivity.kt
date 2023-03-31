@@ -1,8 +1,9 @@
 package com.example.monthlyviewcalendar
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +16,10 @@ import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -60,6 +64,8 @@ class EventEditActivity : AppCompatActivity() {
             mTimePicker.setTitle("Select Time")
             mTimePicker.show()
         }*/
+
+        createNotificationChannel()
 
         timesaday.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             @SuppressLint("SetTextI18n")
@@ -208,8 +214,68 @@ class EventEditActivity : AppCompatActivity() {
 
             val newEvent = Event(eventName, CalendarUtils.selectedDate, timeInLocal, nbTimes, dose, typeMed, nb_stock, containernb)
             Event.eventsList.add(newEvent)
+            scheduleNotification(timeString!!,eventName)
         }
 
         finish()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        val name = "Notif Channel"
+        val desc = " A Description of the channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelID, name, importance)
+        channel.description = desc
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel) // a channel to post the notif on
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun scheduleNotification(timeString: String, name: String) {
+        val notificationId = name.hashCode() + timeString.hashCode()
+        val intent = Intent(applicationContext, Notification::class.java)
+        val title = "Let's make sure you don't miss it!"
+        val message = "Take your "+timeString +" " + name
+        intent.putExtra(titleExtra, title) //sends to getStringExtra in Notification.kt
+        intent.putExtra(messageExtra, message)
+        intent.putExtra("notificationID", notificationId)
+
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("hh:mm:ss a"))
+        val now = LocalDate.now()
+        val localDateTime = LocalDateTime.of(now, time)
+        val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+        val timeInMillis = instant.toEpochMilli()
+
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            timeInMillis,
+            pendingIntent
+        )
+        //showAlert(time, title, message)
+    }
+    private fun showAlert(time: Long, title: String, message: String) {
+        val date = Date(time) //time = getTime()
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+
+        AlertDialog.Builder(this)
+            .setTitle("Notification Scheduled")
+            .setMessage(
+                "Title " + title +
+                        "\nMessage: " + message +
+                        "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date)
+            )
+            .setPositiveButton("Okay") { _, _ -> }
+            .show()
     }
 }
