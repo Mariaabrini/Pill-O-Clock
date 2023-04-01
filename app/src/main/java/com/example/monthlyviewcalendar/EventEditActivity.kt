@@ -1,7 +1,9 @@
 package com.example.monthlyviewcalendar
 
 import android.annotation.SuppressLint
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -11,9 +13,13 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -30,6 +36,7 @@ class EventEditActivity : AppCompatActivity() {
     private lateinit var stockNb: EditText
     private lateinit var timepickercontainer: LinearLayout
     private lateinit var containerNb: AppCompatSpinner
+    private lateinit var refillSwitch: SwitchCompat
 
     private lateinit var time: LocalTime
 
@@ -57,6 +64,8 @@ class EventEditActivity : AppCompatActivity() {
             mTimePicker.setTitle("Select Time")
             mTimePicker.show()
         }*/
+
+        createNotificationChannel()
 
         timesaday.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             @SuppressLint("SetTextI18n")
@@ -131,6 +140,8 @@ class EventEditActivity : AppCompatActivity() {
         stockNb = findViewById(R.id.nbStock_ed)
         timepickercontainer = findViewById(R.id.time_picker_container)
         containerNb = findViewById(R.id.container_spinner)
+        refillSwitch = findViewById(R.id.switch1)
+
 
         val numbers = arrayOf("1", "2", "3", "4")
         val timesADayadapter =
@@ -157,6 +168,28 @@ class EventEditActivity : AppCompatActivity() {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Check if any of the events in eventsList has the same containernb value as the new event
+        for (event in Event.eventsList) {
+            if (event.container == containernb) {
+                // Display a dialog box asking the user to choose a different container number
+                AlertDialog.Builder(this)
+                    .setTitle("Container number already in use")
+                    .setMessage("Please choose a different container number.")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+                return
+            }
+        }
+
+        if (refillSwitch.isChecked) {
+            // Switch is in the "on" state
+            // send notif when nb_stock == dose
+            Toast.makeText(this, "A refill Notif will be scheduled", Toast.LENGTH_SHORT).show()
+        }
+
         for (i in 0 until nbTimes.toInt()){
             val timeTextView = findViewById<TextView>(i+1)
             val timeString = timeTextView?.text?.toString()
@@ -181,8 +214,68 @@ class EventEditActivity : AppCompatActivity() {
 
             val newEvent = Event(eventName, CalendarUtils.selectedDate, timeInLocal, nbTimes, dose, typeMed, nb_stock, containernb)
             Event.eventsList.add(newEvent)
+            scheduleNotification(timeString!!,eventName)
         }
 
         finish()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        val name = "Notif Channel"
+        val desc = " A Description of the channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelID, name, importance)
+        channel.description = desc
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel) // a channel to post the notif on
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun scheduleNotification(timeString: String, name: String) {
+        val notificationId = name.hashCode() + timeString.hashCode()
+        val intent = Intent(applicationContext, Notification::class.java)
+        val title = "Let's make sure you don't miss it!"
+        val message = "Take your "+timeString +" " + name
+        intent.putExtra(titleExtra, title) //sends to getStringExtra in Notification.kt
+        intent.putExtra(messageExtra, message)
+        intent.putExtra("notificationID", notificationId)
+
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("hh:mm:ss a"))
+        val now = LocalDate.now()
+        val localDateTime = LocalDateTime.of(now, time)
+        val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+        val timeInMillis = instant.toEpochMilli()
+
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            timeInMillis,
+            pendingIntent
+        )
+        //showAlert(time, title, message)
+    }
+    private fun showAlert(time: Long, title: String, message: String) {
+        val date = Date(time) //time = getTime()
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+
+        AlertDialog.Builder(this)
+            .setTitle("Notification Scheduled")
+            .setMessage(
+                "Title " + title +
+                        "\nMessage: " + message +
+                        "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date)
+            )
+            .setPositiveButton("Okay") { _, _ -> }
+            .show()
     }
 }
