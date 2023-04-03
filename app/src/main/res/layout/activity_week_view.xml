@@ -141,17 +141,36 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <Button
-        android:id="@+id/new_evntBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Med"
-        android:textColor="#0000FF"
-        android:background="@null"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:onClick="newEventAction"
-        android:textSize="20sp"/>
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/new_evntBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="New Med"
+            android:textColor="#0000FF"
+            android:background="@null"
+            android:textStyle="bold"
+            android:layout_gravity="start"
+            android:onClick="newEventAction"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/submitBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SUBMIT"
+            android:textColor="#0000FF"
+            android:background="@null"
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:onClick="newEventAction"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/eventListView"

@@ -24,7 +24,7 @@ class EventAdapter(context: Context, events: List<Event>) :
         if (convertView == null) convertView =
             LayoutInflater.from(getContext()).inflate(R.layout.event_cell, parent, false)
         val eventCellTV: TextView = convertView!!.findViewById(R.id.eventCellTV)
-        val eventTitle = event!!.name + " " + formattedTime(event.getTime()) +"\n"+
+        val eventTitle = event!!.name + " " + formattedTime(event.time) +"\n"+
                 event.timesaday +" times a day" + " " +  event.dosage +" pill(s)"+ "\n" + event.type + "\n" +
                 event.stock + " pill(s) in stock, container: "+ event.container
 

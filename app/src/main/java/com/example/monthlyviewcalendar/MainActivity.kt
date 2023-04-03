@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
         setMonthView() // calendar in month view
     }
 
+
+
     private fun initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
         monthYearText = findViewById(R.id.monthYearTV)

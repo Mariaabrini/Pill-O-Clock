@@ -3,14 +3,14 @@ package com.example.monthlyviewcalendar
 import java.time.LocalDate
 import java.time.LocalTime
 
-class Event(var name: String, date: LocalDate, time: LocalTime,
+class Event(var name: String, date: LocalDate, var time: LocalTime,
             var timesaday: String, var dosage: String, var type: String, var stock: String, var container: String) {
     private var date: LocalDate
-    private var time: LocalTime
+
 
     init {
         this.date = date
-        this.time = time
+
     }
 
     fun getDate(): LocalDate {
@@ -21,13 +21,14 @@ class Event(var name: String, date: LocalDate, time: LocalTime,
         this.date = date
     }
 
-    fun getTime(): LocalTime {
+    /*fun getTime(): LocalTime {
         return time
-    }
+    }*/
 
+    /*
     fun setTime(time: LocalTime) {
         this.time = time
-    }
+    }*/
 
     companion object {
         //list of all scheduled medications
@@ -41,7 +42,7 @@ class Event(var name: String, date: LocalDate, time: LocalTime,
                 events.add(event) // adds event for everyday
             }
             // Sort events by time
-            events.sortBy { it.getTime() }
+            events.sortBy { it.time }
 
             return events
         }

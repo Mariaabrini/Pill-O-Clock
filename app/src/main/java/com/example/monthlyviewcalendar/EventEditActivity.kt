@@ -169,6 +169,20 @@ class EventEditActivity : AppCompatActivity() {
             return
         }
 
+        // Check if any of the events in eventsList has the same name as the new event
+        for (event in Event.eventsList){
+            if (event.name.equals(eventName, ignoreCase = true)){
+                AlertDialog.Builder(this)
+                    .setTitle("This Medication is already in the box")
+                    .setMessage("Please choose a different medication.")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+                return
+            }
+        }
+
         // Check if any of the events in eventsList has the same containernb value as the new event
         for (event in Event.eventsList) {
             if (event.container == containernb) {
@@ -190,7 +204,10 @@ class EventEditActivity : AppCompatActivity() {
             Toast.makeText(this, "A refill Notif will be scheduled", Toast.LENGTH_SHORT).show()
         }
 
+        val timesList = mutableListOf<LocalTime>()
+
         for (i in 0 until nbTimes.toInt()){
+
             val timeTextView = findViewById<TextView>(i+1)
             val timeString = timeTextView?.text?.toString()
             // Check if the timeString is null or empty
@@ -200,21 +217,19 @@ class EventEditActivity : AppCompatActivity() {
             }
             val timeInLocal = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("hh:mm:ss a"))
 
-            // Check if the current time is equal to any of the previous times
-            for (j in 0 until i) {
-                val prevTimeTextView = findViewById<TextView>(j+1)
-                val prevTimeString = prevTimeTextView?.text?.toString()
-                val prevTimeInLocal = LocalTime.parse(prevTimeString, DateTimeFormatter.ofPattern("hh:mm:ss a"))
-
-                if (timeInLocal == prevTimeInLocal) {
-                    Toast.makeText(this, "Please enter different times", Toast.LENGTH_SHORT).show()
-                    return
-                }
+            if (timesList.contains(timeInLocal)) {
+                Toast.makeText(this, "Please enter different times", Toast.LENGTH_SHORT).show()
+                return
+            } else {
+                timesList.add(timeInLocal)
             }
 
+        }
+
+        for (timeInLocal in timesList){
             val newEvent = Event(eventName, CalendarUtils.selectedDate, timeInLocal, nbTimes, dose, typeMed, nb_stock, containernb)
             Event.eventsList.add(newEvent)
-            scheduleNotification(timeString!!,eventName)
+            scheduleNotification(timeInLocal.format(DateTimeFormatter.ofPattern("hh:mm:ss a")),eventName)
         }
 
         finish()
