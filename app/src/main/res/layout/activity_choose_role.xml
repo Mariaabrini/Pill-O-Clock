@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ChooseRoleActivity">
+
+    <TextView
+        android:id="@+id/txt_ac1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginRight="20dp"
+        android:fontFamily="@font/roboto"
+        android:gravity="center_horizontal"
+        android:text="Choose Your Role:"
+        android:textColor="@color/teal_500"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="170dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/patientBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="1dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/teal_500"
+            android:fontFamily="@font/roboto"
+            android:text="I'm a Patient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/caregiverBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="50dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/teal_400"
+            android:fontFamily="@font/roboto"
+            android:text="I'm a Caregiver"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/loginText"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/txtw2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Already have an account?"
+            android:textColor="@color/teal_700"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto"
+            android:layout_alignParentLeft="true"
+            />
+
+        <TextView
+            android:id="@+id/loginTV_Btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:text="Login"
+            android:textColor="@color/teal_700"
+            android:textSize="25sp"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+
+        <Button
+            android:id="@+id/signupRoleBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:backgroundTint="@color/teal_400"
+            android:fontFamily="@font/roboto"
+            android:layout_marginTop="20sp"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

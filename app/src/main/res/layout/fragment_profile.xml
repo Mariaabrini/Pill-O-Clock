@@ -1,14 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Profile">
+    tools:context=".Profile"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.MonthlyViewCalendar.AppBarOverlay">
 
-</FrameLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.MonthlyViewCalendar.PopupOverlay" />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:id="@+id/editprofilelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8sp"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/baseline_person_white_24"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/circle_shape" />
+        <Button
+            android:id="@+id/select_picture_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Select Picture"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/editTextTextPersonName2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Username"
+            android:autofillHints=""
+            android:layout_marginStart="10sp"/>
+
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:layout_marginStart="10sp"/>
+
+
+        <EditText
+            android:id="@+id/editTextTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Change Password"
+            android:inputType="textPassword"
+            android:layout_marginStart="10sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5sp">
+
+        <TextView
+            android:id="@+id/gendertitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:text="Gender: "
+            android:layout_marginStart="10sp"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/genderSpinner"
+            android:layout_width="0dp"
+            android:layout_height="48sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_weight="1"
+             />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/birthdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:text="Birth Date: "
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:layout_marginStart="10sp"
+            android:textSize="20sp" />
+
+
+        <DatePicker
+            android:id="@+id/birthdayPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:scaleY="0.7"
+            android:scaleX="0.7"
+            android:layout_marginLeft="-30dp"
+            android:layout_marginRight="-30dp"
+            />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveProfileBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:background="@null"
+        android:fontFamily="@font/roboto"
+        android:text="Save" />
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

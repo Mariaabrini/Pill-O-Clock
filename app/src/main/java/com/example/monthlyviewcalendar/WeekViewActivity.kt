@@ -55,7 +55,20 @@ class WeekViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week_view)
-        replaceFragment(Home())
+        val intent = intent
+        val Name = intent.getStringExtra("Name")
+
+        // create a bundle to pass the patient name to the Home fragment
+        val bundle = Bundle()
+        bundle.putString("Name", Name)
+
+        // create a Home fragment instance and set its arguments
+        val homeFragment = Home()
+        homeFragment.arguments = bundle
+
+        // replace the fragment with the Home fragment
+        replaceFragment(homeFragment)
+        //replaceFragment(Home())
 
         bottomNav = findViewById(R.id.bottomNavigationView)
 
@@ -132,7 +145,18 @@ class WeekViewActivity : AppCompatActivity() {
         bottomNav?.setOnItemSelectedListener {
             when(it.itemId){
 
-                R.id.home -> replaceFragment(Home())
+                R.id.home -> {
+                    // create a bundle to pass the patient name to the Home fragment
+                    val bundle = Bundle()
+                    bundle.putString("Name", Name)
+
+                    // create a Home fragment instance and set its arguments
+                    val homeFragment = Home()
+                    homeFragment.arguments = bundle
+
+                    // replace the fragment with the Home fragment
+                    replaceFragment(homeFragment)
+                }
                 R.id.profile -> replaceFragment(Profile())
                 R.id.settings -> replaceFragment(Settings())
                 /*R.id.submit ->{

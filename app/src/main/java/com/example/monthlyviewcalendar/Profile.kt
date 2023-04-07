@@ -1,10 +1,18 @@
 package com.example.monthlyviewcalendar
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.Toolbar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +29,12 @@ class Profile : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    var profileToolbar: Toolbar? = null
+    private lateinit var profilePictureImageView: ImageView
+    private lateinit var pickPicBtn: Button
+    private val PICK_IMAGE_REQUEST = 1
+    private lateinit var gender: AppCompatSpinner
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,7 +48,39 @@ class Profile : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+
+        profileToolbar = view.findViewById(R.id.toolbar)
+
+        profileToolbar?.title = "Profile"
+        (activity as AppCompatActivity).setSupportActionBar(profileToolbar)
+
+        profilePictureImageView = view.findViewById(R.id.profile_picture)
+        pickPicBtn = view.findViewById(R.id.select_picture_button)
+
+        pickPicBtn.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+        }
+
+        gender = view.findViewById(R.id.genderSpinner)
+
+        val genders = arrayOf("Male", "Female")
+        val genderAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders)
+        gender.adapter = genderAdapter
+
+        return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            val imageUri = data.data
+            profilePictureImageView.setImageURI(imageUri)
+        }
     }
 
     companion object {

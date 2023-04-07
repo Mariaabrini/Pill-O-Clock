@@ -159,7 +159,7 @@
             android:layout_gravity="start"
             android:textSize="20sp"/>
 
-        <Button
+        <!--<Button
             android:id="@+id/submitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -169,7 +169,8 @@
             android:background="@null"
             android:textStyle="bold"
             android:layout_gravity="end"
-            android:textSize="20sp"/>
+            android:textSize="20sp"/>-->
+
     </LinearLayout>
 
     <ListView

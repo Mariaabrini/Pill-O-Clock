@@ -39,7 +39,7 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
     private var eventListView: ListView? = null
     var homepageToolbar: Toolbar? = null
     //var bottomNav: BottomNavigationView? = null
-    private lateinit var submitBtn: Button
+    //private lateinit var submitBtn: Button
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
     private var btSocket: BluetoothSocket? = null
@@ -66,7 +66,10 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         homepageToolbar = view.findViewById(R.id.toolbar)
 
-        homepageToolbar?.title = "Homepage"
+        // retrieve the patient name from the arguments
+        val Name = arguments?.getString("Name")
+
+        homepageToolbar?.title = "Homepage " + Name
         (activity as AppCompatActivity).setSupportActionBar(homepageToolbar)
 
         initWidgets(view)
@@ -88,8 +91,6 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
             startActivity(Intent(requireContext(), EventEditActivity::class.java))
         }
 
-
-
         return view
     }
 
@@ -101,7 +102,7 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
         prevBtn = view.findViewById(R.id.previousBtn)
         nextBtn = view.findViewById(R.id.nextBtn)
         addMedBtn = view.findViewById(R.id.new_evntBtn)
-        submitBtn = view.findViewById(R.id.submitBtn)
+        //submitBtn = view.findViewById(R.id.submitBtn)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -115,20 +116,7 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
         setEventAdapter()
     }
 
-
-
     @RequiresApi(Build.VERSION_CODES.O)
-    /*fun nextWeekAction(view: View?) {
-        CalendarUtils.selectedDate =
-            CalendarUtils.selectedDate.plusWeeks(1)
-        setWeekView()
-    }*/
-
-    //new med button action
-    /*fun newEventAction(view: View?) {
-        startActivity(Intent(requireContext(), EventEditActivity::class.java))
-    }*/
-
     override fun onItemClick(position: Int, date: LocalDate?) {
         if (date != null) {
             CalendarUtils.selectedDate = date
@@ -149,16 +137,6 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Home.
-         */
-        private val mUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             Home().apply {
@@ -169,12 +147,6 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
             }
     }
 
-    /*@RequiresApi(Build.VERSION_CODES.O)
-    fun previousWeekAction(view: View) {
-        CalendarUtils.selectedDate =
-            CalendarUtils.selectedDate.minusWeeks(1)
-        setWeekView()
-    }*/
 
 
 }

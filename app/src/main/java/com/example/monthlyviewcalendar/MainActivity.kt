@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        startActivity(Intent(this, WeekViewActivity::class.java)) //if i press back i return to activity_main.xml
+        startActivity(Intent(this, WelcomeActivity::class.java)) //if i press back i return to activity_main.xml
         initWidgets()
         CalendarUtils.selectedDate = LocalDate.now() //get current date
         setMonthView() // calendar in month view

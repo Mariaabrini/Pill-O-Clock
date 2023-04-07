@@ -142,7 +142,6 @@ class EventEditActivity : AppCompatActivity() {
         containerNb = findViewById(R.id.container_spinner)
         refillSwitch = findViewById(R.id.switch1)
 
-
         val numbers = arrayOf("1", "2", "3", "4")
         val timesADayadapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_item, numbers)
