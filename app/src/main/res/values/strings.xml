@@ -7,4 +7,6 @@
     <string name="type">Type:</string>
     <string name="refill_reminder">Refill Reminder</string>
     <string name="enter_number_of_pills_in_stock">enter number of pills in stock</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

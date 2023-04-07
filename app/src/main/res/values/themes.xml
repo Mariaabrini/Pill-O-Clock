@@ -13,6 +13,10 @@
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:timePickerStyle">@style/MyTimePickerTheme</item>
+        <!-- Disable the default ActionBar and remove the title bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="Theme.MonthlyViewCalendar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

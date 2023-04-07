@@ -1,11 +1,9 @@
 package com.example.monthlyviewcalendar
 
 
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothSocket
 import android.Manifest
 import android.annotation.SuppressLint
+import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,25 +20,26 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.monthlyviewcalendar.CalendarUtils.daysInWeekArray
 import com.example.monthlyviewcalendar.CalendarUtils.monthYearFromDate
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
+class WeekViewActivity : AppCompatActivity() {
 
-    private var monthYearText: TextView? = null
-    private var calendarRecyclerView: RecyclerView? = null
-    private var eventListView: ListView? = null
-    var homepageToolbar: Toolbar? = null
+    var bottomNav: BottomNavigationView? = null
     private lateinit var submitBtn: Button
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
@@ -56,11 +55,18 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week_view)
+        replaceFragment(Home())
+
+        bottomNav = findViewById(R.id.bottomNavigationView)
+
         initWidgets()
-        setWeekView()
+
+
+        //setWeekView()
 
         // BLUETOOTH CONNECTION
-        /*val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        /*
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val btAdapter = bluetoothManager.adapter
 
         Log.d("Bluetooth devices found", btAdapter?.bondedDevices.toString())
@@ -85,6 +91,27 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
                     //println(btSocket.isConnected)
                     Log.d("check connection", "Is connected: " + btSocket?.isConnected())
 
+                    // Set the baud rate to 152200
+                    /*val outputStream = btSocket?.outputStream
+                    outputStream?.write("AT+UART=152200,0,0\r\n".toByteArray())
+                    outputStream?.flush()*/
+
+
+                    // Set the baud rate to 152200
+                    /*val sppProfile = btAdapter?.getProfileProxy(this, object : BluetoothProfile.ServiceListener {
+                        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile?) {
+                            if (profile == BluetoothProfile.HEADSET) {
+                                val attributes = hashMapOf<String, Int>("android.bluetooth.BluetoothProfile.extra_baudrate" to 152200)
+                                val method = proxy?.javaClass?.getMethod("setHiSyncId", BluetoothDevice::class.java, HashMap::class.java)
+                                method?.invoke(proxy, btSocket?.remoteDevice, attributes)
+                            }
+                        }
+
+                        override fun onServiceDisconnected(profile: Int) {
+                            Log.d("Bluetooth profile disconnected", profile.toString())
+                        }
+                    }, BluetoothProfile.HEADSET)*/
+
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -100,18 +127,47 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
             }*/
 
 
-        }*/
+        }
+        */
+        bottomNav?.setOnItemSelectedListener {
+            when(it.itemId){
+
+                R.id.home -> replaceFragment(Home())
+                R.id.profile -> replaceFragment(Profile())
+                R.id.settings -> replaceFragment(Settings())
+                /*R.id.submit ->{
+                    sendData(btSocket!!)
+                    receiveData(btSocket!!)
+                }*/
+
+                else ->{
+
+                }
+
+            }
+
+            true
+        }
+    }
+
+    private fun replaceFragment(fragment : Fragment){
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frame_layout,fragment)
+        fragmentTransaction.commit()
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         // Close the Bluetooth socket when the activity is destroyed
-        /*try {
+        try {
             btSocket?.close()
             Log.d("check connection", "Is connected: " + btSocket?.isConnected())
         } catch (e: IOException) {
             e.printStackTrace()
-        }*/
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -218,61 +274,14 @@ class WeekViewActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     }
 
     private fun initWidgets() {
-        calendarRecyclerView = findViewById<RecyclerView>(R.id.calendarRecyclerView)
-        monthYearText = findViewById<TextView>(R.id.monthYearTV)
-        eventListView = findViewById<ListView>(R.id.eventListView)
-        homepageToolbar = findViewById(R.id.toolbar)
-        homepageToolbar?.title = "Homepage"
-        submitBtn = findViewById(R.id.submitBtn)
+        //submitBtn = findViewById(R.id.submitBtn)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setWeekView() {
-        monthYearText?.text = monthYearFromDate(CalendarUtils.selectedDate)
-        val days: ArrayList<LocalDate?> = daysInWeekArray(CalendarUtils.selectedDate)
-        val calendarAdapter = CalendarAdapter(days, this)
-        val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(applicationContext, 7)
-        calendarRecyclerView!!.layoutManager = layoutManager
-        calendarRecyclerView!!.adapter = calendarAdapter
-        setEventAdapter()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun previousWeekAction(view: View?) {
-        CalendarUtils.selectedDate =
-            CalendarUtils.selectedDate.minusWeeks(1)
-        setWeekView()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun nextWeekAction(view: View?) {
-        CalendarUtils.selectedDate =
-            CalendarUtils.selectedDate.plusWeeks(1)
-        setWeekView()
-    }
-
-    //new med button action
-    fun newEventAction(view: View?) {
-        startActivity(Intent(this, EventEditActivity::class.java))
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onItemClick(position: Int, date: LocalDate?) {
-        if (date != null) {
-            CalendarUtils.selectedDate = date
-        }
-        setWeekView()
-    }
 
     override fun onResume() {
         super.onResume()
-        setEventAdapter()
+
     }
 
-    //generates list of scheduled medications
-    private fun setEventAdapter() {
-        val dailyEvents: ArrayList<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
-        val eventAdapter = EventAdapter(applicationContext, dailyEvents)
-        eventListView!!.adapter = eventAdapter
-    }
+
 }
