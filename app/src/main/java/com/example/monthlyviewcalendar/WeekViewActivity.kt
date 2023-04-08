@@ -57,10 +57,12 @@ class WeekViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_week_view)
         val intent = intent
         val Name = intent.getStringExtra("Name")
+        val role = intent.getStringExtra("role")
 
         // create a bundle to pass the patient name to the Home fragment
         val bundle = Bundle()
         bundle.putString("Name", Name)
+        bundle.putString("role",role)
 
         // create a Home fragment instance and set its arguments
         val homeFragment = Home()
@@ -149,6 +151,7 @@ class WeekViewActivity : AppCompatActivity() {
                     // create a bundle to pass the patient name to the Home fragment
                     val bundle = Bundle()
                     bundle.putString("Name", Name)
+                    bundle.putString("role",role)
 
                     // create a Home fragment instance and set its arguments
                     val homeFragment = Home()

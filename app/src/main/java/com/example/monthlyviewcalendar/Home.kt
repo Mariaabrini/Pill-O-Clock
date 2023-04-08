@@ -1,14 +1,14 @@
 package com.example.monthlyviewcalendar
 
 import android.bluetooth.BluetoothSocket
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -46,7 +46,9 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
     private var prevBtn: Button? = null
     private var nextBtn: Button? = null
     private var addMedBtn: Button? = null
-
+    private lateinit var addMedLayout: LinearLayout
+    lateinit var  Name: String
+    lateinit var  role: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,11 +68,14 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         homepageToolbar = view.findViewById(R.id.toolbar)
 
-        // retrieve the patient name from the arguments
-        val Name = arguments?.getString("Name")
+        // retrieve the name and role from the arguments
+        Name = arguments?.getString("Name").toString()
+        role = arguments?.getString("role").toString()
 
-        homepageToolbar?.title = "Homepage " + Name
+        homepageToolbar?.title = "Homepage " + role +" "+Name
         (activity as AppCompatActivity).setSupportActionBar(homepageToolbar)
+
+        setHasOptionsMenu(true)
 
         initWidgets(view)
         setWeekView()
@@ -87,12 +92,43 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
             setWeekView()
         }
 
-        addMedBtn?.setOnClickListener {
-            startActivity(Intent(requireContext(), EventEditActivity::class.java))
+        if(role == "Patient"){
+            addMedLayout = view.findViewById(R.id.addMedicineLayout)
+            addMedLayout.visibility = View.VISIBLE
+            //only patients can add medicine
+            addMedBtn = view.findViewById(R.id.new_evntBtn)
+            addMedBtn?.setOnClickListener {
+                val intent = Intent(requireContext(), EventEditActivity::class.java)
+                intent.putExtra("Name",Name)
+                startActivity(intent)
+            }
         }
 
         return view
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.top_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_signout -> {
+                // Handle sign out button click
+                val sharedPref = requireActivity().getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().remove("patient_name").apply()
+
+                val intent = Intent(requireContext(), ChooseRoleActivity::class.java)
+                startActivity(intent)
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
 
     private fun initWidgets(view: View) {
         calendarRecyclerView = view.findViewById<RecyclerView>(R.id.calendarRecyclerView)
@@ -101,7 +137,7 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
 
         prevBtn = view.findViewById(R.id.previousBtn)
         nextBtn = view.findViewById(R.id.nextBtn)
-        addMedBtn = view.findViewById(R.id.new_evntBtn)
+        //addMedBtn = view.findViewById(R.id.new_evntBtn)
         //submitBtn = view.findViewById(R.id.submitBtn)
     }
 
@@ -124,16 +160,32 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
         setWeekView()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
         setEventAdapter()
     }
 
     //generates list of scheduled medications
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setEventAdapter() {
-        val dailyEvents: ArrayList<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
-        val eventAdapter = EventAdapter(requireContext(), dailyEvents)
-        eventListView!!.adapter = eventAdapter
+        if(role == "Patient"){
+            val db = ScheduledPillDBHelper(requireContext(),null)
+            //val dailyEvents: ArrayList<Event> = Event.eventsForDate(CalendarUtils.selectedDate)
+            val dailyEvents: List<Medication> = db.getMedicationsByPatientName(Name)
+            val eventAdapter = EventAdapter(requireContext(), dailyEvents,true)
+            eventListView!!.adapter = eventAdapter
+        }
+        if(role == "Caregiver"){
+            val db = PatientDBHelper(requireContext(),null)
+            val medDb = ScheduledPillDBHelper(requireContext(),null)
+            val patients: List<Patient> = db.getPatientsByCaregiver(Name)
+            for (patient in patients){
+                val dailyEvents: List<Medication> = medDb.getMedicationsNotTakenByPatientName(patient.name)
+                val eventAdapter = EventAdapter(requireContext(), dailyEvents,false)
+                eventListView!!.adapter = eventAdapter
+            }
+        }
     }
 
     companion object {

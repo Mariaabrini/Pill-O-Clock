@@ -33,7 +33,7 @@ class Profile : Fragment() {
     private lateinit var profilePictureImageView: ImageView
     private lateinit var pickPicBtn: Button
     private val PICK_IMAGE_REQUEST = 1
-    private lateinit var gender: AppCompatSpinner
+    //private lateinit var gender: AppCompatSpinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +64,12 @@ class Profile : Fragment() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        gender = view.findViewById(R.id.genderSpinner)
+        /*gender = view.findViewById(R.id.genderSpinner)
 
         val genders = arrayOf("Male", "Female")
         val genderAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders)
-        gender.adapter = genderAdapter
+        gender.adapter = genderAdapter*/
 
         return view
     }

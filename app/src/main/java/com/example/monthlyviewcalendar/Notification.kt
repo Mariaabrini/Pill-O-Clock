@@ -17,16 +17,27 @@ const val messageExtra = "messageExtra"
 class Notification : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val notificationID = intent.getIntExtra("notificationID",0)
-        val notification = NotificationCompat.Builder(context, channelID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(intent.getStringExtra(titleExtra))
-            .setContentText(intent.getStringExtra(messageExtra))
-            .build()
+        val patientName = intent.getStringExtra("patientName")
+        val currentPatientName = getCurrentPatientID(context)
 
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(notificationID, notification)
-        Log.d("Notification", "Notification received")
+        if (patientName == currentPatientName){
+            val notification = NotificationCompat.Builder(context, channelID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(intent.getStringExtra(titleExtra))
+                .setContentText(intent.getStringExtra(messageExtra))
+                .build()
 
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.notify(notificationID, notification)
+            Log.d("Notification", "Notification received")
+        }
+
+    }
+
+
+    fun getCurrentPatientID(context: Context): String? {
+        val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+        return sharedPref.getString("patient_name", null)
     }
 
 }

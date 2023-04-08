@@ -20,11 +20,16 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val query = ("CREATE TABLE " + TABLE_NAME + " ("
                 + ID_COL + " INTEGER PRIMARY KEY, " +
                 NAME_COL + " TEXT," +
-                EMAIL_COL + " TEXT," + PASSWORD_COL + " TEXT" +")")
+                EMAIL_COL + " TEXT," +
+                PASSWORD_COL + " TEXT" + ")")
 
         // we are calling sqlite
         // method for executing our query
         db.execSQL(query)
+
+        // If you want to set default values for gender and birthdate columns to null
+        //db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + GENDER_COL + " TEXT DEFAULT NULL")
+        //db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + BIRTHDATE_COL + " TEXT DEFAULT NULL")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -42,14 +47,16 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     // This method is for adding data in our database
-    fun addCaregiver(name: String, email: String, password: String ){
+    fun addCaregiver(name: String, email: String, password: String, gender: String?, birthdate: String? ){
 
         val hashedPassword = hashPassword(password)
 
         val values = ContentValues().apply {
+
             put(NAME_COL, name)
             put(EMAIL_COL, email)
             put(PASSWORD_COL, hashedPassword)
+
         }
 
         // here we are creating a
@@ -147,7 +154,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private val DATABASE_NAME = "PILLOCLOCK"
 
         // below is the variable for database version
-        private val DATABASE_VERSION = 1
+        private val DATABASE_VERSION = 4
 
         // below is the variable for table name
         val TABLE_NAME = "caregiver_table"
@@ -161,7 +168,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         // below is the variable for email column
         val EMAIL_COL = "email"
 
-        // below is the variable for email column
+        // below is the variable for password column
         val PASSWORD_COL = "password"
+
     }
 }

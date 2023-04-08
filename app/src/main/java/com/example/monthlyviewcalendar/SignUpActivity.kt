@@ -1,6 +1,7 @@
 package com.example.monthlyviewcalendar
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -87,12 +88,17 @@ class SignUpActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                db.addCaregiver(name,mail,password_in)
+                db.addCaregiver(name,mail,password_in,null,null)
 
                 Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
 
+                //to keep track of current signed in user
+                val sharedPref = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("patient_name", name).apply()
+
                 val intent = Intent(this, WeekViewActivity::class.java)
                 intent.putExtra("Name",name)
+                intent.putExtra("role",role)
                 startActivity(intent)
             }
 
@@ -127,12 +133,17 @@ class SignUpActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                db.addPatient(name,mail,password_in,caregiver)
+                db.addPatient(name,mail,password_in,caregiver,null,null)
 
                 Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
 
+                //to keep track of current signed in user
+                val sharedPref = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("patient_name", name).apply()
+
                 val intent = Intent(this, WeekViewActivity::class.java)
                 intent.putExtra("Name",name)
+                intent.putExtra("role",role)
                 startActivity(intent)
             }
         }

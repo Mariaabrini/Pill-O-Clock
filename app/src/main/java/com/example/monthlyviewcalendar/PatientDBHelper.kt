@@ -7,6 +7,15 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.security.MessageDigest
 
+data class Patient(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val password: String,
+    val caregiverName: String
+)
+
+
 class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
@@ -18,11 +27,15 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
                 + ID_COL + " INTEGER PRIMARY KEY, " +
                 NAME_COL + " TEXT," +
                 EMAIL_COL + " TEXT," + PASSWORD_COL + " TEXT," +
-                CAREGIVERNAME_COL + " TEXT" +")")
+                CAREGIVERNAME_COL + " TEXT"+")")
 
         // we are calling sqlite
         // method for executing our query
         db.execSQL(query)
+
+        // If you want to set default values for gender and birthdate columns to null
+        //db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + GENDER_COL + " TEXT DEFAULT NULL")
+        //db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + BIRTHDATE_COL + " TEXT DEFAULT NULL")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -40,7 +53,7 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
     }
 
     // This method is for adding data in our database
-    fun addPatient(name: String, email: String, password: String, caregiver: String ){
+    fun addPatient(name: String, email: String, password: String, caregiver: String, gender: String?, birthdate: String? ){
 
         val hashedPassword = hashPassword(password)
 
@@ -49,6 +62,7 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
             put(EMAIL_COL, email)
             put(PASSWORD_COL, hashedPassword)
             put(CAREGIVERNAME_COL,caregiver)
+
         }
 
         // here we are creating a
@@ -56,7 +70,8 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         // our database as we want to
         // insert value in our database
         val db = this.writableDatabase
-        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT, $CAREGIVERNAME_COL TEXT)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT," +
+                " $CAREGIVERNAME_COL TEXT)")
         // all values are inserted into database
         db.insert(TABLE_NAME, null, values)
 
@@ -78,6 +93,10 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         // here we are creating a readable variable of our database as we want to read value from it
         val db = this.readableDatabase
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY," +
+                " $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT, " +
+                "$CAREGIVERNAME_COL TEXT)")
+
         val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
         if (cursor.moveToFirst()) {
             val name = cursor.getString(cursor.getColumnIndex(NAME_COL))
@@ -97,7 +116,8 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         // here we are creating a readable variable of our database as we want to read value from it
         val db = this.readableDatabase
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT, $CAREGIVERNAME_COL TEXT)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT," +
+                " $CAREGIVERNAME_COL TEXT)")
 
         val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
         if (cursor.moveToFirst()) {
@@ -108,6 +128,36 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         return "false"
     }
 
+    @SuppressLint("Range")
+    fun getPatientsByCaregiver(caregiverName: String): List<Patient> {
+        val patients = mutableListOf<Patient>()
+        val db = readableDatabase
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT," +
+                " $CAREGIVERNAME_COL TEXT)")
+
+        val selection = "$CAREGIVERNAME_COL = ?"
+        val selectionArgs = arrayOf(caregiverName)
+
+        val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(cursor.getColumnIndex(ID_COL))
+                val name = cursor.getString(cursor.getColumnIndex(NAME_COL))
+                val email = cursor.getString(cursor.getColumnIndex(EMAIL_COL))
+                val password = cursor.getString(cursor.getColumnIndex(PASSWORD_COL))
+                val caregiver = cursor.getString(cursor.getColumnIndex(CAREGIVERNAME_COL))
+                patients.add(Patient(id, name, email, password, caregiver))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return patients
+    }
+
+
+
+
     companion object{
         // here we have defined variables for our database
 
@@ -115,7 +165,7 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         private val DATABASE_NAME = "PILLOCLOCK"
 
         // below is the variable for database version
-        private val DATABASE_VERSION = 1
+        private val DATABASE_VERSION = 4
 
         // below is the variable for table name
         val TABLE_NAME = "patient_table"
@@ -134,5 +184,7 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
 
         // below is the variable for caregiver column
         val CAREGIVERNAME_COL = "caregiver"
+
+
     }
 }

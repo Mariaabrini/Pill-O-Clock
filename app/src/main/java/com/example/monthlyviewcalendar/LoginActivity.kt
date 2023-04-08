@@ -1,6 +1,7 @@
 package com.example.monthlyviewcalendar
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -61,8 +62,13 @@ class LoginActivity : AppCompatActivity() {
 
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 
+                //to keep track of current loggedin user
+                val sharedPref = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("patient_name", name).apply()
+
                 val intent = Intent(this, WeekViewActivity::class.java)
                 intent.putExtra("Name",name)
+                intent.putExtra("role",role)
                 startActivity(intent)
 
             }
@@ -96,8 +102,14 @@ class LoginActivity : AppCompatActivity() {
 
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 
+                //to keep track of current loggedin user
+                val sharedPref = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("patient_name", name).apply()
+
+
                 val intent = Intent(this, WeekViewActivity::class.java)
                 intent.putExtra("Name",name)
+                intent.putExtra("role",role)
                 startActivity(intent)
 
             }

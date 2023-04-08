@@ -70,28 +70,7 @@
         android:layout_marginTop="20dp">
 
         <EditText
-            android:id="@+id/editTextTextPersonName2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Username"
-            android:autofillHints=""
-            android:layout_marginStart="10sp"/>
-
-
-        <EditText
-            android:id="@+id/editTextTextEmailAddress2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:layout_marginStart="10sp"/>
-
-
-        <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -101,6 +80,8 @@
 
     </LinearLayout>
 
+
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -161,6 +142,7 @@
             />
 
     </LinearLayout>
+        -->
 
     <Button
         android:id="@+id/saveProfileBtn"

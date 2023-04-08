@@ -37,14 +37,16 @@ class EventEditActivity : AppCompatActivity() {
     private lateinit var timepickercontainer: LinearLayout
     private lateinit var containerNb: AppCompatSpinner
     private lateinit var refillSwitch: SwitchCompat
-
     private lateinit var time: LocalTime
+    private lateinit var Name: String
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_edit)
+        val intent = intent
+        Name = intent.getStringExtra("Name").toString()
         initWidgets()
         time = LocalTime.now()
 
@@ -155,6 +157,7 @@ class EventEditActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun saveEventAction(view: View?) {
+        val db = ScheduledPillDBHelper(this,null)
         val eventName = eventNameET?.text.toString()
         val nbTimes = timesaday.selectedItem.toString()
         val dose = dosage.text.toString()
@@ -169,7 +172,7 @@ class EventEditActivity : AppCompatActivity() {
         }
 
         // Check if any of the events in eventsList has the same name as the new event
-        for (event in Event.eventsList){
+        /*for (event in Event.eventsList){
             if (event.name.equals(eventName, ignoreCase = true)){
                 AlertDialog.Builder(this)
                     .setTitle("This Medication is already in the box")
@@ -180,10 +183,17 @@ class EventEditActivity : AppCompatActivity() {
                     .show()
                 return
             }
+        }*/
+
+        // Check if med+patient already exists
+        if(db.getName(eventName,Name) == "true"){
+            Toast.makeText(this, "Medication already Registered", Toast.LENGTH_SHORT).show()
+            return
         }
 
+
         // Check if any of the events in eventsList has the same containernb value as the new event
-        for (event in Event.eventsList) {
+        /*for (event in Event.eventsList) {
             if (event.container == containernb) {
                 // Display a dialog box asking the user to choose a different container number
                 AlertDialog.Builder(this)
@@ -195,12 +205,21 @@ class EventEditActivity : AppCompatActivity() {
                     .show()
                 return
             }
+        }*/
+
+        if(db.getContainer(Name,containernb) == "true"){
+            Toast.makeText(this, "Container already Used", Toast.LENGTH_SHORT).show()
+            return
         }
 
+        var refill: String
         if (refillSwitch.isChecked) {
             // Switch is in the "on" state
-            // send notif when nb_stock == dose
+            // send notif when nb_stock ==
+            refill = "true"
             Toast.makeText(this, "A refill Notif will be scheduled", Toast.LENGTH_SHORT).show()
+        }else{
+            refill = "false"
         }
 
         val timesList = mutableListOf<LocalTime>()
@@ -222,13 +241,14 @@ class EventEditActivity : AppCompatActivity() {
             } else {
                 timesList.add(timeInLocal)
             }
-
         }
 
         for (timeInLocal in timesList){
-            val newEvent = Event(eventName, CalendarUtils.selectedDate, timeInLocal, nbTimes, dose, typeMed, nb_stock, containernb)
-            Event.eventsList.add(newEvent)
-            scheduleNotification(timeInLocal.format(DateTimeFormatter.ofPattern("hh:mm:ss a")),eventName)
+            var timeS = timeInLocal.format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
+            //val newEvent = Event(eventName, CalendarUtils.selectedDate, timeInLocal, nbTimes, dose, typeMed, nb_stock, containernb)
+            //Event.eventsList.add(newEvent)
+            db.addScheduledPill(eventName,nbTimes,dose,typeMed,containernb,timeS,nb_stock,refill,"false",Name)
+            scheduleNotification(timeS,eventName)
         }
 
         finish()
@@ -254,6 +274,7 @@ class EventEditActivity : AppCompatActivity() {
         intent.putExtra(titleExtra, title) //sends to getStringExtra in Notification.kt
         intent.putExtra(messageExtra, message)
         intent.putExtra("notificationID", notificationId)
+        intent.putExtra("patientName",Name)
 
 
         val pendingIntent = PendingIntent.getBroadcast(
