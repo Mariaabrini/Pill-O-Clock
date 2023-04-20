@@ -94,7 +94,6 @@ class WeekViewActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH), 1)
         } else {
             // Code that needs the permission can be moved here
-
             var counter = 0
             do {
                 try {

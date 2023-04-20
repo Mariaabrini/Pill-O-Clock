@@ -65,6 +65,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         // insert value in our database
         val db = this.writableDatabase
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (${ID_COL} INTEGER PRIMARY KEY, ${NAME_COL} TEXT, ${EMAIL_COL} TEXT, ${PASSWORD_COL} TEXT)")
+
         // all values are inserted into database
         db.insert(TABLE_NAME, null, values)
 
@@ -85,7 +87,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // here we are creating a readable variable of our database as we want to read value from it
         val db = this.readableDatabase
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (${ID_COL} INTEGER PRIMARY KEY, ${NAME_COL} TEXT, ${EMAIL_COL} TEXT, ${PASSWORD_COL} TEXT)")
         val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
         if (cursor.moveToFirst()) {
             val name = cursor.getString(cursor.getColumnIndex(NAME_COL))
@@ -105,7 +107,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // here we are creating a readable variable of our database as we want to read value from it
         val db = this.readableDatabase
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (${ID_COL} INTEGER PRIMARY KEY, ${NAME_COL} TEXT, ${EMAIL_COL} TEXT, ${PASSWORD_COL} TEXT)")
         val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
         if (cursor.moveToFirst()) {
 
@@ -122,7 +124,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // here we are creating a readable variable of our database as we want to read value from it
         val db = this.readableDatabase
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (${ID_COL} INTEGER PRIMARY KEY, ${NAME_COL} TEXT, ${EMAIL_COL} TEXT, ${PASSWORD_COL} TEXT)")
         // Define the columns you want to retrieve from the table
         val columns = arrayOf(NAME_COL)
 
@@ -144,7 +146,6 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         return caregivers
     }
-
 
 
     companion object{

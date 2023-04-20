@@ -19,6 +19,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var repassword: EditText
     private lateinit var careLayout: LinearLayout
     private lateinit var caregiverSpinner: AppCompatSpinner
+
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     @SuppressLint("SetTextI18n")

@@ -186,7 +186,7 @@ class EventEditActivity : AppCompatActivity() {
         }*/
 
         // Check if med+patient already exists
-        if(db.getName(eventName,Name) == "true"){
+        if(db.getName(eventName.lowercase(),Name.lowercase()) == "true"){
             Toast.makeText(this, "Medication already Registered", Toast.LENGTH_SHORT).show()
             return
         }

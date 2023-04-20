@@ -180,11 +180,13 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
             val db = PatientDBHelper(requireContext(),null)
             val medDb = ScheduledPillDBHelper(requireContext(),null)
             val patients: List<Patient> = db.getPatientsByCaregiver(Name)
+            val dailyEvents: MutableList<Medication> = mutableListOf()
             for (patient in patients){
-                val dailyEvents: List<Medication> = medDb.getMedicationsNotTakenByPatientName(patient.name)
-                val eventAdapter = EventAdapter(requireContext(), dailyEvents,false)
-                eventListView!!.adapter = eventAdapter
+                val patientDailyEvents: List<Medication> = medDb.getMedicationsNotTakenByPatientName(patient.name)
+                dailyEvents.addAll(patientDailyEvents)
             }
+            val eventAdapter = EventAdapter(requireContext(), dailyEvents,false)
+            eventListView!!.adapter = eventAdapter
         }
     }
 
