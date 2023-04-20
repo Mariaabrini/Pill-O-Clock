@@ -215,7 +215,7 @@ class EventEditActivity : AppCompatActivity() {
         var refill: String
         if (refillSwitch.isChecked) {
             // Switch is in the "on" state
-            // send notif when nb_stock ==
+            // send notif when nb_stock == dosage
             refill = "true"
             Toast.makeText(this, "A refill Notif will be scheduled", Toast.LENGTH_SHORT).show()
         }else{

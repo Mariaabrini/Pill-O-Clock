@@ -3,6 +3,8 @@ package com.example.monthlyviewcalendar
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
@@ -20,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -141,8 +144,8 @@ class WeekViewActivity : AppCompatActivity() {
             }*/
 
 
-        }
-        */
+        }*/
+
         bottomNav?.setOnItemSelectedListener {
             when(it.itemId){
 
@@ -159,11 +162,26 @@ class WeekViewActivity : AppCompatActivity() {
                     // replace the fragment with the Home fragment
                     replaceFragment(homeFragment)
                 }
-                R.id.profile -> replaceFragment(Profile())
+                //R.id.profile -> replaceFragment(Profile())
+                R.id.profile -> {
+                    // create a bundle to pass the patient name to the Home fragment
+                    val bundle = Bundle()
+                    bundle.putString("Name", Name)
+                    bundle.putString("role",role)
+
+                    // create a Profile fragment instance and set its arguments
+                    val profileFragment = Profile()
+                    profileFragment.arguments = bundle
+
+                    // replace the fragment with the Profile fragment
+                    replaceFragment(profileFragment)
+                }
                 R.id.settings -> replaceFragment(Settings())
                 /*R.id.submit ->{
+                    if (role == "Patient"){ //only submits if patient is sending data
                     sendData(btSocket!!)
                     receiveData(btSocket!!)
+                    }
                 }*/
 
                 else ->{
@@ -218,8 +236,27 @@ class WeekViewActivity : AppCompatActivity() {
                     val bytes = inputStream?.read(buffer)
 
                     // Convert the ByteArray to a String
-                    val message = String(buffer, 0, bytes ?: 0)
+                    val message = String(buffer, 0, bytes ?: 0) //weight of the load cell
                     Log.d("msgArduino", message)
+                    //if weight positive medecine not taken -> generate notification
+                    if (message.toFloat() > 0.02){
+                        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                        val channelId = "default"
+                        val channelName = "Default Channel"
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+                            notificationManager.createNotificationChannel(channel)
+                        }
+                        val notification = NotificationCompat.Builder(applicationContext, channelId)
+                            .setContentTitle("Medication Reminder")
+                            .setContentText("You haven't taken your medication yet!")
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .build()
+                        notificationManager.notify(0, notification)
+
+                    }else{
+                        //set the taken value in database to true
+                    }
                 }
             }
         }

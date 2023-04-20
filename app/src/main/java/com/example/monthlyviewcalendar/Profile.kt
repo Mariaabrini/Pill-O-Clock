@@ -1,7 +1,9 @@
 package com.example.monthlyviewcalendar
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,8 +34,11 @@ class Profile : Fragment() {
     var profileToolbar: Toolbar? = null
     private lateinit var profilePictureImageView: ImageView
     private lateinit var pickPicBtn: Button
+    private lateinit var imageUri: Uri
     private val PICK_IMAGE_REQUEST = 1
     //private lateinit var gender: AppCompatSpinner
+    lateinit var  Name: String
+    lateinit var  role: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,11 +57,25 @@ class Profile : Fragment() {
 
         profileToolbar = view.findViewById(R.id.toolbar)
 
-        profileToolbar?.title = "Profile"
+        // retrieve the name and role from the arguments
+        Name = arguments?.getString("Name").toString()
+        role = arguments?.getString("role").toString()
+
+        profileToolbar?.title = "Profile"+ role +" "+Name
         (activity as AppCompatActivity).setSupportActionBar(profileToolbar)
+
+
 
         profilePictureImageView = view.findViewById(R.id.profile_picture)
         pickPicBtn = view.findViewById(R.id.select_picture_button)
+
+        // retrieve the saved image URI from shared preferences
+        //val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = activity?.getSharedPreferences("my_prefs_${Name}", Context.MODE_PRIVATE)
+
+        val savedUriString = sharedPref?.getString("imageUri", null)
+        imageUri = savedUriString?.let { Uri.parse(it) } ?: Uri.EMPTY
+        profilePictureImageView.setImageURI(imageUri)
 
         pickPicBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -78,8 +97,12 @@ class Profile : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            val imageUri = data.data
+            imageUri = data.data!!
             profilePictureImageView.setImageURI(imageUri)
+
+            // save the image URI to shared preferences
+            val sharedPref = activity?.getSharedPreferences("my_prefs_${Name}", Context.MODE_PRIVATE)
+            sharedPref?.edit()?.putString("imageUri", imageUri.toString())?.apply()
         }
     }
 
