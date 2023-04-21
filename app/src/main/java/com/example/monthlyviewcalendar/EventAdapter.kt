@@ -1,12 +1,15 @@
 package com.example.monthlyviewcalendar
 
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -17,7 +20,7 @@ import java.time.format.DateTimeFormatter
 
 
 class EventAdapter(context: Context, events: List<Medication>,private val isPatient: Boolean) :
-    ArrayAdapter<Medication>(context, 0, events) {
+    ArrayAdapter<Medication>(context, 0, ArrayList(events)) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -26,6 +29,9 @@ class EventAdapter(context: Context, events: List<Medication>,private val isPati
         if (convertView == null) convertView =
             LayoutInflater.from(getContext()).inflate(R.layout.event_cell, parent, false)
         val eventCellTV: TextView = convertView!!.findViewById(R.id.eventCellTV)
+        val eventCellBtn : ImageView = convertView!!.findViewById(R.id.deleteSchedBtn)
+
+        if(isPatient){eventCellBtn.visibility = View.VISIBLE}
 
         val eventTitle = if (isPatient) {
             // Set the event title for a patient
@@ -47,6 +53,23 @@ class EventAdapter(context: Context, events: List<Medication>,private val isPati
 
         }
         eventCellTV.text = eventTitle
+
+        eventCellBtn.setOnClickListener {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Confirm Deletion")
+            builder.setMessage("Are you sure you want to delete this schedule?")
+            builder.setPositiveButton("Delete") { _, _ ->
+                val dbHandler = ScheduledPillDBHelper(context, null)
+                dbHandler.deleteMedsByMedNameAndPatientNameAndTime(event!!.name, event.patientName,event.time)
+                remove(event)
+                notifyDataSetChanged()
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.show()
+        }
+
         return convertView
     }
 }

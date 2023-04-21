@@ -164,7 +164,7 @@ class WeekViewActivity : AppCompatActivity() {
                 }
                 //R.id.profile -> replaceFragment(Profile())
                 R.id.profile -> {
-                    // create a bundle to pass the patient name to the Home fragment
+                    // create a bundle to pass the patient name to the Profile fragment
                     val bundle = Bundle()
                     bundle.putString("Name", Name)
                     bundle.putString("role",role)
@@ -176,7 +176,19 @@ class WeekViewActivity : AppCompatActivity() {
                     // replace the fragment with the Profile fragment
                     replaceFragment(profileFragment)
                 }
-                R.id.settings -> replaceFragment(Settings())
+                R.id.settings -> {
+                    // create a bundle to pass the patient name to the Settings fragment
+                    val bundle = Bundle()
+                    bundle.putString("Name", Name)
+                    bundle.putString("role",role)
+
+                    // create a Settings fragment instance and set its arguments
+                    val settingsFragment = Settings()
+                    settingsFragment.arguments = bundle
+
+                    // replace the fragment with the Settings fragment
+                    replaceFragment(settingsFragment)
+                }
                 /*R.id.submit ->{
                     if (role == "Patient"){ //only submits if patient is sending data
                     sendData(btSocket!!)

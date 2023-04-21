@@ -155,6 +155,19 @@ class PatientDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) 
         return patients
     }
 
+    fun updatePatientPassword(patientName: String, newPassword: String) {
+        val db = writableDatabase
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($ID_COL INTEGER PRIMARY KEY, $NAME_COL TEXT, $EMAIL_COL TEXT, $PASSWORD_COL TEXT," +
+                " $CAREGIVERNAME_COL TEXT)")
+
+        val hashedPassword = hashPassword(newPassword)
+
+        val contentValues = ContentValues()
+        contentValues.put(PASSWORD_COL, hashedPassword)
+        db.update(TABLE_NAME, contentValues, "$NAME_COL = ?", arrayOf(patientName))
+        db.close()
+    }
+
 
 
 

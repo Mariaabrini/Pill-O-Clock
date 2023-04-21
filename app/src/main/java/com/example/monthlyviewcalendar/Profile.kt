@@ -3,18 +3,21 @@ package com.example.monthlyviewcalendar
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ImageView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.Manifest
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,6 +42,8 @@ class Profile : Fragment() {
     //private lateinit var gender: AppCompatSpinner
     lateinit var  Name: String
     lateinit var  role: String
+    private lateinit var editPassword : EditText
+    private lateinit var saveBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,12 +80,38 @@ class Profile : Fragment() {
 
         val savedUriString = sharedPref?.getString("imageUri", null)
         imageUri = savedUriString?.let { Uri.parse(it) } ?: Uri.EMPTY
-        profilePictureImageView.setImageURI(imageUri)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                1)
+        } else {
+            // Permission has already been granted
+            // Access the media files here
+            profilePictureImageView.setImageURI(imageUri)
+        }
+
+
 
         pickPicBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
+        }
+
+        saveBtn = view.findViewById(R.id.saveProfileBtn)
+        editPassword = view.findViewById(R.id.editPassword)
+
+        //update database with new password
+        saveBtn.setOnClickListener {
+            if(editPassword.text.isNullOrEmpty()){
+                Toast.makeText(requireContext(), "Please fill in the new Password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val db = PatientDBHelper(requireContext(), null)
+            db.updatePatientPassword(Name, editPassword.text.toString())
+            Toast.makeText(requireContext(), "Password Updated!", Toast.LENGTH_SHORT).show()
         }
 
         /*gender = view.findViewById(R.id.genderSpinner)

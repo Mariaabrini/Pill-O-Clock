@@ -282,6 +282,81 @@ class ScheduledPillDBHelper(context: Context, factory: SQLiteDatabase.CursorFact
         return sortedMedications
     }
 
+    @SuppressLint("Range")
+    fun getMedicationNamesForPatient(patientName: String): List<String> {
+        val db = this.readableDatabase
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME (" +
+                "$ID_COL INTEGER PRIMARY KEY, " +
+                "$NAME_COL TEXT, " +
+                "$TIMESADAY_COL TEXT, " +
+                "$DOSE_COL TEXT, " +
+                "$TYPE_COL TEXT, " +
+                "$CONTAINER_COL TEXT, " +
+                "$TIME_COL TEXT, " +
+                "$STOCK_COL TEXT, " +
+                "$REFILL_COL TEXT, " +
+                "$TAKEN_COL TEXT, " +
+                "$PATIENTNAME_COL TEXT" +
+                ")")
+        val projection = arrayOf(NAME_COL)
+        val selection = "$PATIENTNAME_COL = ?"
+        val selectionArgs = arrayOf(patientName)
+        val cursor = db.query(TABLE_NAME, projection, selection, selectionArgs, null, null, null)
+        val medicationNames = mutableListOf<String>()
+
+        medicationNames.clear()
+
+        while (cursor.moveToNext()) {
+            val medicationName = cursor.getString(cursor.getColumnIndex(NAME_COL))
+            medicationNames.add(medicationName)
+        }
+        cursor.close()
+        return medicationNames
+    }
+
+    fun deleteMedsByMedNameAndPatientName(medName: String, patient: String): Boolean {
+        val db = this.writableDatabase
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME (" +
+                "$ID_COL INTEGER PRIMARY KEY, " +
+                "$NAME_COL TEXT, " +
+                "$TIMESADAY_COL TEXT, " +
+                "$DOSE_COL TEXT, " +
+                "$TYPE_COL TEXT, " +
+                "$CONTAINER_COL TEXT, " +
+                "$TIME_COL TEXT, " +
+                "$STOCK_COL TEXT, " +
+                "$REFILL_COL TEXT, " +
+                "$TAKEN_COL TEXT, " +
+                "$PATIENTNAME_COL TEXT" +
+                ")")
+        val args = arrayOf(medName, patient)
+        val result = db.delete(TABLE_NAME, "$NAME_COL =? AND $PATIENTNAME_COL =?", args)
+        db.close()
+        return result != -1
+    }
+    fun deleteMedsByMedNameAndPatientNameAndTime(medName: String, patient: String, time:String): Boolean {
+        val db = this.writableDatabase
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME (" +
+                "$ID_COL INTEGER PRIMARY KEY, " +
+                "$NAME_COL TEXT, " +
+                "$TIMESADAY_COL TEXT, " +
+                "$DOSE_COL TEXT, " +
+                "$TYPE_COL TEXT, " +
+                "$CONTAINER_COL TEXT, " +
+                "$TIME_COL TEXT, " +
+                "$STOCK_COL TEXT, " +
+                "$REFILL_COL TEXT, " +
+                "$TAKEN_COL TEXT, " +
+                "$PATIENTNAME_COL TEXT" +
+                ")")
+        val args = arrayOf(medName, patient,time)
+        val result = db.delete(TABLE_NAME, "$NAME_COL =? AND $PATIENTNAME_COL =? AND $TIME_COL =?", args)
+        db.close()
+        return result != -1
+    }
+
+
+
     companion object{
         // here we have defined variables for our database
 
