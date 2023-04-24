@@ -26,7 +26,7 @@ import java.util.*
 
 class EventEditActivity : AppCompatActivity() {
 
-    private var eventNameET: EditText? = null
+    private lateinit var eventNameET: AutoCompleteTextView
     //private var eventDateTV: TextView? = null
     private var eventTimeTV: TextView? = null
     private var homepageToolbar: Toolbar? = null
@@ -131,9 +131,13 @@ class EventEditActivity : AppCompatActivity() {
     }
 
     private fun initWidgets() {
-        eventNameET = findViewById<EditText>(R.id.edit_med_name)
-        //eventDateTV = findViewById<TextView>(R.id.eventDateTV)
-        //eventTimeTV = findViewById<TextView>(R.id.eventTimeTV)
+        eventNameET = findViewById<AutoCompleteTextView>(R.id.edit_med_name)
+        val medicationNames = resources.getStringArray(R.array.medication_names)
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, medicationNames)
+        // Set the threshold to 1 to show suggestions for one character input
+        eventNameET.threshold = 1
+        eventNameET.setAdapter(adapter)
+
         homepageToolbar = findViewById(R.id.toolbar)
         homepageToolbar?.title = "Add Medicine"
         timesaday = findViewById(R.id.timesaday_spinner)

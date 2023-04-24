@@ -57,7 +57,7 @@
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/edit_med_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

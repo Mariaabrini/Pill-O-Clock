@@ -32,4 +32,35 @@
         <item>3</item>
         <item>4</item>
     </array>
+
+    <string-array name="medication_names">
+        <item>Panadol</item>
+        <item>Advil</item>
+        <item>Profinal</item>
+        <item>Acetaminophen</item>
+        <item>Aspirin</item>
+        <item>Ibuprofen</item>
+        <item>Naproxen</item>
+        <item>Codeine</item>
+        <item>Morphine</item>
+        <item>Oxycodone</item>
+        <item>Hydrocodone</item>
+        <item>Tramadol</item>
+        <item>Amoxicillin</item>
+        <item>Penicillin</item>
+        <item>Cephalexin</item>
+        <item>Ciprofloxacin</item>
+        <item>Levofloxacin</item>
+        <item>Metronidazole</item>
+        <item>Fluconazole</item>
+        <item>Lisinopril</item>
+        <item>Losartan</item>
+        <item>Simvastatin</item>
+        <item>Atorvastatin</item>
+        <item>Metoprolol</item>
+        <item>Propranolol</item>
+        <item>Albuterol</item>
+        <item>Budesonide</item>
+    </string-array>
+
 </resources>
