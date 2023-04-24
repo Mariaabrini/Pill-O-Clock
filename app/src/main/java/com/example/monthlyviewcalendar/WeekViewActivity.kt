@@ -257,13 +257,14 @@ class WeekViewActivity : AppCompatActivity() {
                         notificationManager.notify(0, notification)
 
                     }else{
-                        //set the taken value in database to true to all past scheduled pills
+                        //set the taken value in database to true to all past scheduled pills and update nb of stock
                         val db = ScheduledPillDBHelper(applicationContext, null)
                         val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
                         db.updateTakenValue(currentTime)
 
-                        //decrease nb of stock for each scheduled med and check for refill
-                        
+                        //check for refill and send notif if needed
+                        db.checkStockLevels(this@WeekViewActivity)
+
                     }
                 }
             }
