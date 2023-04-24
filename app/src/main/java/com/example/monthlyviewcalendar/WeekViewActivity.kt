@@ -36,6 +36,8 @@ import java.io.OutputStream
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -227,6 +229,7 @@ class WeekViewActivity : AppCompatActivity() {
     private fun startTimer(inputStream: InputStream?) {
         timer = Timer()
         timerTask = object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun run() {
                 // Check if there is data available in the input stream
                 if ((inputStream?.available() ?: 0) > 0) {
@@ -236,6 +239,7 @@ class WeekViewActivity : AppCompatActivity() {
                     // Convert the ByteArray to a String
                     val message = String(buffer, 0, bytes ?: 0) //weight of the load cell
                     Log.d("msgArduino", message)
+
                     //if weight positive medicine not taken -> generate notification
                     if (message.toFloat() > 0.02){
                         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -253,7 +257,13 @@ class WeekViewActivity : AppCompatActivity() {
                         notificationManager.notify(0, notification)
 
                     }else{
-                        //set the taken value in database to true
+                        //set the taken value in database to true to all past scheduled pills
+                        val db = ScheduledPillDBHelper(applicationContext, null)
+                        val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
+                        db.updateTakenValue(currentTime)
+
+                        //decrease nb of stock for each scheduled med and check for refill
+                        
                     }
                 }
             }

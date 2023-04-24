@@ -355,6 +355,35 @@ class ScheduledPillDBHelper(context: Context, factory: SQLiteDatabase.CursorFact
         return result != -1
     }
 
+    fun updateTakenValue(currentTime: String) {
+        // Get a writable instance of the database
+        val db = writableDatabase
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME (" +
+                "$ID_COL INTEGER PRIMARY KEY, " +
+                "$NAME_COL TEXT, " +
+                "$TIMESADAY_COL TEXT, " +
+                "$DOSE_COL TEXT, " +
+                "$TYPE_COL TEXT, " +
+                "$CONTAINER_COL TEXT, " +
+                "$TIME_COL TEXT, " +
+                "$STOCK_COL TEXT, " +
+                "$REFILL_COL TEXT, " +
+                "$TAKEN_COL TEXT, " +
+                "$PATIENTNAME_COL TEXT" +
+                ")")
+
+        // Define the update statement
+        val updateQuery = "UPDATE $TABLE_NAME SET $TAKEN_COL = 'true' WHERE $TIME_COL <= '$currentTime' AND $TAKEN_COL = 'false'"
+
+        // Execute the update statement
+        db.execSQL(updateQuery)
+
+        // Close the database connection
+        db.close()
+    }
+
+
 
 
     companion object{
