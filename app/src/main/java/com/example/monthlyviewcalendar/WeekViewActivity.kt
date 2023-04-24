@@ -62,6 +62,8 @@ class WeekViewActivity : AppCompatActivity() {
         val Name = intent.getStringExtra("Name")
         val role = intent.getStringExtra("role")
 
+
+
         // create a bundle to pass the patient name to the Home fragment
         val bundle = Bundle()
         bundle.putString("Name", Name)
@@ -73,14 +75,11 @@ class WeekViewActivity : AppCompatActivity() {
 
         // replace the fragment with the Home fragment
         replaceFragment(homeFragment)
-        //replaceFragment(Home())
 
         bottomNav = findViewById(R.id.bottomNavigationView)
 
         initWidgets()
 
-
-        //setWeekView()
 
         // BLUETOOTH CONNECTION
         /*
@@ -108,35 +107,22 @@ class WeekViewActivity : AppCompatActivity() {
                     //println(btSocket.isConnected)
                     Log.d("check connection", "Is connected: " + btSocket?.isConnected())
 
-                    // Set the baud rate to 152200
-                    /*val outputStream = btSocket?.outputStream
-                    outputStream?.write("AT+UART=152200,0,0\r\n".toByteArray())
-                    outputStream?.flush()*/
-
-
-                    // Set the baud rate to 152200
-                    /*val sppProfile = btAdapter?.getProfileProxy(this, object : BluetoothProfile.ServiceListener {
-                        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile?) {
-                            if (profile == BluetoothProfile.HEADSET) {
-                                val attributes = hashMapOf<String, Int>("android.bluetooth.BluetoothProfile.extra_baudrate" to 152200)
-                                val method = proxy?.javaClass?.getMethod("setHiSyncId", BluetoothDevice::class.java, HashMap::class.java)
-                                method?.invoke(proxy, btSocket?.remoteDevice, attributes)
-                            }
-                        }
-
-                        override fun onServiceDisconnected(profile: Int) {
-                            Log.d("Bluetooth profile disconnected", profile.toString())
-                        }
-                    }, BluetoothProfile.HEADSET)*/
-
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 counter++
             } while (!btSocket?.isConnected!! && counter < 3)
+            //each time the user logs in if he has scheduled meds we need to listen to inputstream
+            if(role == "Patient"){
+                val db = ScheduledPillDBHelper(this,null)
 
+                val dailyEvents: List<Medication> = db.getMedicationsByPatientName(Name.toString())
 
+                if (dailyEvents.isNotEmpty()){
+                    receiveData(btSocket!!)
+                }
 
+            }
             /*submitBtn.setOnClickListener {
                 sendData(btSocket!!)
                 receiveData(btSocket!!)
@@ -250,7 +236,7 @@ class WeekViewActivity : AppCompatActivity() {
                     // Convert the ByteArray to a String
                     val message = String(buffer, 0, bytes ?: 0) //weight of the load cell
                     Log.d("msgArduino", message)
-                    //if weight positive medecine not taken -> generate notification
+                    //if weight positive medicine not taken -> generate notification
                     if (message.toFloat() > 0.02){
                         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                         val channelId = "default"

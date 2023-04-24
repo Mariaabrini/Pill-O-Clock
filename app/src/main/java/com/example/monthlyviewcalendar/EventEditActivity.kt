@@ -171,19 +171,6 @@ class EventEditActivity : AppCompatActivity() {
             return
         }
 
-        // Check if any of the events in eventsList has the same name as the new event
-        /*for (event in Event.eventsList){
-            if (event.name.equals(eventName, ignoreCase = true)){
-                AlertDialog.Builder(this)
-                    .setTitle("This Medication is already in the box")
-                    .setMessage("Please choose a different medication.")
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-                return
-            }
-        }*/
 
         // Check if med+patient already exists
         if(db.getName(eventName.lowercase(),Name.lowercase()) == "true"){
@@ -191,24 +178,13 @@ class EventEditActivity : AppCompatActivity() {
             return
         }
 
-
-        // Check if any of the events in eventsList has the same containernb value as the new event
-        /*for (event in Event.eventsList) {
-            if (event.container == containernb) {
-                // Display a dialog box asking the user to choose a different container number
-                AlertDialog.Builder(this)
-                    .setTitle("Container number already in use")
-                    .setMessage("Please choose a different container number.")
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-                return
-            }
-        }*/
-
         if(db.getContainer(Name,containernb) == "true"){
             Toast.makeText(this, "Container already Used", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if(nb_stock.toInt() <= dose.toInt()){
+            Toast.makeText(this, "Nb in stock should be higher than the Dosage", Toast.LENGTH_SHORT).show()
             return
         }
 

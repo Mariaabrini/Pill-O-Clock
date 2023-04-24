@@ -122,6 +122,8 @@ class Home : Fragment(), CalendarAdapter.OnItemListener {
                 val intent = Intent(requireContext(), ChooseRoleActivity::class.java)
                 startActivity(intent)
 
+                requireActivity().finish() //to destroy current activity and cant go back to it
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
