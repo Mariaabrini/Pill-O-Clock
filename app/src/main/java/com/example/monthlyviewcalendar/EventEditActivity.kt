@@ -187,7 +187,7 @@ class EventEditActivity : AppCompatActivity() {
             return
         }
 
-        if(nb_stock.toInt() <= dose.toInt()){
+        if(nb_stock.toInt() < dose.toInt()){
             Toast.makeText(this, "Nb in stock should be higher than the Dosage", Toast.LENGTH_SHORT).show()
             return
         }

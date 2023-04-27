@@ -37,6 +37,7 @@ import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -49,6 +50,8 @@ class WeekViewActivity : AppCompatActivity() {
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
     private var btSocket: BluetoothSocket? = null
+    lateinit var  Name: String
+    lateinit var  role: String
 
 
     companion object {
@@ -61,8 +64,8 @@ class WeekViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week_view)
         val intent = intent
-        val Name = intent.getStringExtra("Name")
-        val role = intent.getStringExtra("role")
+        Name = intent.getStringExtra("Name").toString()
+        role = intent.getStringExtra("role").toString()
 
 
 
@@ -84,7 +87,7 @@ class WeekViewActivity : AppCompatActivity() {
 
 
         // BLUETOOTH CONNECTION
-        /*
+
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val btAdapter = bluetoothManager.adapter
 
@@ -132,7 +135,7 @@ class WeekViewActivity : AppCompatActivity() {
             }*/
 
 
-        }*/
+        }
 
         bottomNav?.setOnItemSelectedListener {
             when(it.itemId){
@@ -177,12 +180,13 @@ class WeekViewActivity : AppCompatActivity() {
                     // replace the fragment with the Settings fragment
                     replaceFragment(settingsFragment)
                 }
-                /*R.id.submit ->{
+                R.id.submit ->{
                     if (role == "Patient"){ //only submits if patient is sending data
-                    sendData(btSocket!!)
-                    receiveData(btSocket!!)
+                        sendData(btSocket!!)
+                        Log.d("data", "sent")
+                        receiveData(btSocket!!)
                     }
-                }*/
+                }
 
                 else ->{
 
@@ -241,7 +245,7 @@ class WeekViewActivity : AppCompatActivity() {
                     Log.d("msgArduino", message)
 
                     //if weight positive medicine not taken -> generate notification
-                    if (message.toFloat() > 0.02){
+                    if (message.toFloat() > 0.4){
                         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                         val channelId = "default"
                         val channelName = "Default Channel"
@@ -270,7 +274,7 @@ class WeekViewActivity : AppCompatActivity() {
             }
         }
         // Schedule the timer task to run every 1 second
-        timer?.schedule(timerTask, 0, 1000)
+        timer?.schedule(timerTask, 0, 10)
     }
 
     private fun receiveData(btSocket: BluetoothSocket){
@@ -290,35 +294,39 @@ class WeekViewActivity : AppCompatActivity() {
 
 
     @SuppressLint("SimpleDateFormat")
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun sendData(btSocket: BluetoothSocket) {
+        Log.d("inside","sendData funct")
+        val db = ScheduledPillDBHelper(this,null)
+        val dailyEvents: List<Medication> = db.getMedicationsByPatientName(Name)
 
-            if(!Event.eventsList.isEmpty()){
+        if(!dailyEvents.isEmpty()){
                 val containerName1 = "1" // replace with the desired container name
 
-                val eventsWithContainer1 = Event.eventsList.filter { it.container == containerName1 }.sortedBy { it.time }
+                val eventsWithContainer1 = dailyEvents.filter { it.container == containerName1 }.sortedBy { it.time }
 
 
                 val eventDetails1 = eventsWithContainer1.map {
-                    "${containerName1},${it.time},${it.dosage}"
+                    "${containerName1},${LocalTime.parse(it.time, DateTimeFormatter.ofPattern("hh:mm:ss a"))},${it.dose}"
                 }
+
                 val container1Details = eventDetails1.joinToString(separator = ";")//between events of same container
 
                 val containerName2 = "2" // replace with the desired container name
 
-                val eventsWithContainer2 = Event.eventsList.filter { it.container == containerName2 }.sortedBy { it.time }
+                val eventsWithContainer2 = dailyEvents.filter { it.container == containerName2 }.sortedBy { it.time }
 
                 val eventDetails2 = eventsWithContainer2.map {
-                    "${containerName2},${it.time},${it.dosage}"
+                    "${containerName2},${LocalTime.parse(it.time, DateTimeFormatter.ofPattern("hh:mm:ss a"))},${it.dose}"
                 }
                 val container2Details = eventDetails2.joinToString(separator = ";")//between events of same container
 
                 val containerName3 = "3" // replace with the desired container name
 
-                val eventsWithContainer3 = Event.eventsList.filter { it.container == containerName3 }.sortedBy { it.time }
+                val eventsWithContainer3 = dailyEvents.filter { it.container == containerName3 }.sortedBy { it.time }
 
                 val eventDetails3 = eventsWithContainer3.map {
-                    "${containerName3},${it.time},${it.dosage}"
+                    "${containerName3},${LocalTime.parse(it.time, DateTimeFormatter.ofPattern("hh:mm:ss a"))},${it.dose}"
                 }
                 val container3Details = eventDetails3.joinToString(separator = ";")//between events of same container
 
@@ -330,6 +338,7 @@ class WeekViewActivity : AppCompatActivity() {
                     Log.d("connection before write", "Is connected: " + btSocket.isConnected())
 
                     outputStream.write(totalmessage.toByteArray())
+                    Log.d("data format",totalmessage)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
