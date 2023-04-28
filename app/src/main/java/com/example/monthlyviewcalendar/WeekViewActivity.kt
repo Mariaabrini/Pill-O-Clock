@@ -96,7 +96,7 @@ class WeekViewActivity : AppCompatActivity() {
         Log.d("Bluetooth devices found", btAdapter?.bondedDevices.toString())
 
         val hc05: BluetoothDevice = btAdapter?.getRemoteDevice("FC:A8:9A:00:07:98")!!
-        //println(hc05.name)
+
         Log.d("Bluetooth device Name", hc05.name.toString())
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
@@ -107,11 +107,9 @@ class WeekViewActivity : AppCompatActivity() {
             do {
                 try {
                     btSocket = hc05.createRfcommSocketToServiceRecord(mUUID)
-
-                    //println(btSocket)
                     Log.d("socket created", btSocket.toString())
+
                     btSocket?.connect()
-                    //println(btSocket.isConnected)
                     Log.d("check connection", "Is connected: " + btSocket?.isConnected())
 
                 } catch (e: IOException) {
