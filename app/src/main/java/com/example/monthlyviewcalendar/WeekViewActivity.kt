@@ -33,6 +33,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -236,6 +238,7 @@ class WeekViewActivity : AppCompatActivity() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun run() {
                 // Check if there is data available in the input stream
+                if (btSocket!!.isConnected ){
                 if ((inputStream?.available() ?: 0) > 0) {
                     val buffer = ByteArray(1024)
                     val bytes = inputStream?.read(buffer)
@@ -244,8 +247,14 @@ class WeekViewActivity : AppCompatActivity() {
                     val message = String(buffer, 0, bytes ?: 0) //weight of the load cell
                     Log.d("msgArduino", message)
 
+                    /*var weight: Float
+
+                    weight = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).float
+                    Log.d("msgArduino", "Weight: $weight")*/
+
+
                     //if weight positive medicine not taken -> generate notification
-                    if (message.toFloat() > 0.4){
+                    if (message.toFloat() > 0.3){
                         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                         val channelId = "default"
                         val channelName = "Default Channel"
@@ -270,11 +279,11 @@ class WeekViewActivity : AppCompatActivity() {
                         db.checkStockLevels(this@WeekViewActivity)
 
                     }
-                }
+                }}
             }
         }
-        // Schedule the timer task to run every 1 second
-        timer?.schedule(timerTask, 0, 10)
+        // Schedule the timer task to run every 0.001 second
+        timer?.schedule(timerTask, 0, 1)
     }
 
     private fun receiveData(btSocket: BluetoothSocket){
