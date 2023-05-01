@@ -117,6 +117,7 @@ class WeekViewActivity : AppCompatActivity() {
                 }
                 counter++
             } while (!btSocket?.isConnected!! && counter < 3)
+
             //each time the user logs in if he has scheduled meds we need to listen to inputstream
             if(role == "Patient"){
                 val db = ScheduledPillDBHelper(this,null)
@@ -128,11 +129,7 @@ class WeekViewActivity : AppCompatActivity() {
                 }
 
             }
-            /*submitBtn.setOnClickListener {
-                sendData(btSocket!!)
-                receiveData(btSocket!!)
 
-            }*/
 
 
         }

@@ -66,7 +66,7 @@ class Profile : Fragment() {
         Name = arguments?.getString("Name").toString()
         role = arguments?.getString("role").toString()
 
-        profileToolbar?.title = "Profile"+ role +" "+Name
+        profileToolbar?.title = "Profile "+ role +" "+Name
         (activity as AppCompatActivity).setSupportActionBar(profileToolbar)
 
 
